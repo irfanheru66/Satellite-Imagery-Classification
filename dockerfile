@@ -10,6 +10,10 @@ COPY requirements.txt requirements.txt
 
 RUN pip3 install -r requirements.txt
 
+RUN pip3 install gdown
+
+RUN  gdown --fuzzy https://drive.google.com/file/d/1EBYQN9evN9lXOLaGqah29k7mOxlvcrrW/view?usp=sharing
+
 COPY . .
 
 EXPOSE 5000

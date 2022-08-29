@@ -19,6 +19,11 @@ def gridFind(img,gridSize,W):
         grid.append(img[j:jj,i:ii])
     return grid,coor
 
+def overlay(grid,color):
+  shapes =np.ones(grid.shape, dtype=np.uint8)
+  cv2.rectangle(shapes, (0, 0), (255,255), color, cv2.FILLED)
+  return cv2.addWeighted(grid, 0.8, shapes, 0.2, 1.0)
+
 def plotDrawgrid(coors,drawedImg,grid,sz,model):
   drawedImg = cv2.cvtColor(drawedImg, cv2.COLOR_BGR2RGB)
   sz = sz // 4
@@ -26,22 +31,22 @@ def plotDrawgrid(coors,drawedImg,grid,sz,model):
     start = coors[i][0]
     end = coors[i][1]
     label,conf = pred(grid[i],model)
-    print(label)
+    # print(label)
     labels.append(label)
-    cv2.rectangle(drawedImg,tuple(start),tuple(end),(0,0,0),5)
-    if label == "cloudy":
+    # cv2.rectangle(drawedImg,tuple(start),tuple(end),(0,0,0),5)
+    if label == "Cloudy":
+      drawedImg[start[1]:end[1],start[0]:end[0]] = overlay(grid[i],(255,255,255))
       cv2.putText(drawedImg, 'Cloudy', (start[0]+sz,start[1]+sz), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,0), 2, cv2.LINE_AA)
-      cv2.putText(drawedImg, f'conf:{conf}', (start[0]+sz,start[1]+sz + 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,0), 2, cv2.LINE_AA)
     elif label == "Desert":
-      cv2.putText(drawedImg, 'Desert', (start[0]+sz,start[1]+sz), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,255,0), 2, cv2.LINE_AA)
-      cv2.putText(drawedImg, f'conf:{conf}', (start[0]+sz,start[1]+sz + 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,255,0), 2, cv2.LINE_AA)
-    elif label == "Green Area":
-      cv2.putText(drawedImg, 'Green_area', (start[0]+sz,start[1]+sz), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2, cv2.LINE_AA)
-      cv2.putText(drawedImg, f'conf:{conf}', (start[0]+sz,start[1]+sz + 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2, cv2.LINE_AA)
+      drawedImg[start[1]:end[1],start[0]:end[0]] = overlay(grid[i],(0,255,255))
+      cv2.putText(drawedImg, 'Desert', (start[0]+sz,start[1]+sz), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,0), 2, cv2.LINE_AA)
+    elif label == "Green area":
+      drawedImg[start[1]:end[1],start[0]:end[0]] = overlay(grid[i],(0,255,0))
+      cv2.putText(drawedImg, 'Green_area', (start[0]+sz,start[1]+sz), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,0), 2, cv2.LINE_AA)
     elif label == "Water":
-      cv2.putText(drawedImg, 'water', (start[0]+sz,start[1]+sz), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2, cv2.LINE_AA)
-      cv2.putText(drawedImg, f'conf:{conf}', (start[0]+sz,start[1]+sz + 50), cv2.FONT_HERSHEY_SIMPLEX, 1,  (0,0,255), 2, cv2.LINE_AA)
-  return drawedImg
+      drawedImg[start[1]:end[1],start[0]:end[0]] = overlay(grid[i],(255,0,0))
+      cv2.putText(drawedImg, 'water', (start[0]+sz,start[1]+sz), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,0), 2, cv2.LINE_AA)
+  return cv2.cvtColor(drawedImg, cv2.COLOR_BGR2RGB)
 
 def pred(img,model):
   img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -62,7 +67,6 @@ def percent(count,len):
   return str((count/len)*100) + "%"
 
 def main(src):
-
     img = cv2.imread(src)
     model = torch.load("mobilenetV3.pth",map_location=torch.device('cpu'))
     gridSize = 256
@@ -80,6 +84,7 @@ def main(src):
     #print(verdic_data)
 
     cv2.imwrite(resultPath,cv2.cvtColor(result, cv2.COLOR_BGR2RGB))
+    del labels[:]
     return verdic_data
 
 def process64(src):
@@ -106,7 +111,7 @@ def process64(src):
   cv2.imwrite(resultPath,cv2.cvtColor(result, cv2.COLOR_BGR2RGB))
   with open(resultPath, "rb") as image_file:
     result64 = base64.b64encode(image_file.read())
-  verdic_data["image"] = str(result64)
+  verdic_data["image"] = str(result64)[2:-1]
 
   return verdic_data
 
