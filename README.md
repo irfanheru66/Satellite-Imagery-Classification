@@ -3,8 +3,8 @@
 This program receive an Satellite image with 1024 x 1024 Resolution
 
 <p float="left">
-  <img src="readmeAssets/Satellite Photo 4 copy.jpg" width="300" />
-  <img src="readmeAssets/result (10).jpg" width="300" /> 
+  <img src="ReadmeAssets/Satellite Photo 4 copy.jpg" width="300" />
+  <img src="ReadmeAssets/result (10).jpg" width="300" /> 
 </p>
 
 # Run this app via Docker
@@ -30,8 +30,8 @@ docker run -p 5000:5000 irfanheru66/satellite-imagery-classification:1.0
 # You can use this app via HTML
 
 <p float="left">
-  <img src="readmeAssets/upload.png" width="400" />
-  <img src="readmeAssets/result.png" width="400" /> 
+  <img src="ReadmeAssets/upload.png" width="400" />
+  <img src="ReadmeAssets/result.png" width="400" /> 
 </p>
 
 # Or, you can use the api
