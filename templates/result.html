@@ -1,0 +1,41 @@
+{% extends 'template.html' %}
+
+{% block content %}
+
+<div class="card p-3" style="width: 70rem;">
+    <div class="card-body">
+
+
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Original</th>
+                <th scope="col">Result</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                    <img src="{{url_for('static',filename='source.jpg')}}" width="500px" />
+                </td>
+                <td>
+                    <img src="{{url_for('static',filename='result.jpg')}}" width="500px" />
+                    <ul>
+                      <li>Cloudy     : {{data["Cloudy"]}}</li>
+                      <li>Desert     : {{data["Desert"]}}</li>
+                      <li>Green Area : {{data["Green Area"]}}</li>
+                      <li>Water      : {{data["Water"]}}</li>
+                  </ul>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+        <div class="d-flex justify-content-center">
+            <a href="{{ url_for('index') }}" class="btn btn-danger" style="width: 8rem">Back</a>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
